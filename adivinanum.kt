@@ -24,80 +24,79 @@ const val BOLD = "\u001B[1m"
 const val UNDERLINE = "\u001B[4m"
 
 fun main() {
+    var juega = true
 
+    while (juega) {
+        println("")
+        println("${GREEN}1. Jugar ")
+        println("${GREEN}2. Ultimo intento ")
+        println("${GREEN}3. Salir ")
+        println("${RESET} ")
+        println("")
 
-    println("")
-    println("1. Jugar ")
-    println("2. Ultimo intento ")
-    println("3. Salir ")
-    println(" ")
-    println("")
-    print("Elige tu opcion --> ")
-    print("")
+        print("Elige tu opción --> ")
+        val opcion = readln().toInt()
 
-    var opcion = readln().toInt()
+        when (opcion) {
+            1 -> { 
+                println("Vamos a jugar!")
+                println("Introduce un número de 4 cifras que no se repitan desde 1 hasta el 6. (Tienes 5 intentos) ")
+                println(" ")
 
-    if (opcion == 1) {
-        println("Vamos a jugar!")
-        println("Introduce un numero de 4 cifras que no se repitan desde 1 hasta el 6. (Tienes 5 intentos) ")
-        println(" ")
+                // Variables
+                val aleatorio = (1..6).toList().shuffled().take(4)
+                val randomNumber = aleatorio.joinToString("")
+                var intentos = 0
+                var adivino = false
 
-        //variables
-        val aleatorio = (1..6).toList().shuffled().take(4)
-        val randomNumber = aleatorio.joinToString("")
-        var intentos = 0
-        var adivino = false
+                // Bucle que se repite hasta que se adivine o se acaben los intentos
+                while (!adivino && intentos < 5) {
+                    intentos++
 
-        //blucle que se repite hasta que se adivine o se acaben los intentos
-        while (!adivino && intentos <5) {
-            intentos++
+                    print("Intento número $intentos: ")
+                    val minumero = readln()
+                    var naranja = 0 // Se encuentra pero en una posición incorrecta
+                    var verde = 0 // Está en la posición correcta
 
-            print("Intento numero $intentos : ")
+                    for (i in minumero.indices) {
+                        if (minumero[i] == randomNumber[i]) {
+                            verde++
+                        } else if (minumero[i] in randomNumber) {
+                            naranja++
+                        }
+                    }
+                    print("$minumero  ${BG_YELLOW}$naranja ${BG_GREEN}$verde ${RESET}")
+                    println(" ")
 
-            var minumero = readln()
-            var naranja = 0
-            var verde = 0
-
-
-            for (i in minumero.indices) {
-                if (minumero[i] == randomNumber[i]) {
-                    verde++
-                } else if (minumero[i] in randomNumber) {
-                    naranja++
+                    // Comprueba si el número fue adivinado o si te quedaste sin intentos
+                    if (randomNumber == minumero) {
+                        println("${BG_GREEN}${BLACK}¡Ganaste en $intentos intentos! El número era $randomNumber")
+                        adivino = true
+                        val file = File("resultado.txt")
+                        file.appendText("Resultado: Ganaste! en $intentos intentos.\n")
+                    } else if (intentos == 5) {
+                        println(" ")
+                        println("${BG_RED}${BLACK}¡Perdiste! El número era $randomNumber${RESET}")
+                        val file = File("resultado.txt")
+                        file.appendText("Resultado: Perdiste en $intentos intentos.\n")
+                    }
                 }
             }
-            print("$minumero  ${BG_YELLOW}$naranja ${BG_GREEN}$verde ${RESET}")
-            println(" ")
 
-            //comprueba si el numero fue adivinado o si te quedaste sin intentos
-            if (randomNumber == minumero) {
-                println("${BG_GREEN}${BLACK}Ganaste en $intentos intentos! el numero era $randomNumber")
-                adivino = true
-
-                val file = File("resultado.txt")
-                file.appendText("Resultado: Ganaste! en $intentos intentos.")
-
-            } else if (intentos == 5) {
-                println(" ")
-                println("${BG_RED}${BLACK}Perdiste! el numero era $randomNumber")
-
-                val file = File("resultado.txt")
-                file.appendText("Resultado: Perdiste en $intentos intentos.")
-
+            2 -> { //ultimos intentos
+                val leerintentos = File("resultado.txt").readLines()
+                println(leerintentos)
             }
+
+            3 -> { // Opción 3: Salir
+                println("¡Adiós!")
+                juega = false
+            }
+
         }
-
-
-        }
-    if (opcion == 2) {
-        var leerintentos = File("resultado.txt").readLines()
-        println(leerintentos)
-
     }
-    if (opcion == 3) {
+}
 
-        println("Adios")
-    }
 
 
 }
